@@ -1,9 +1,10 @@
 # Reference Template Generator
 
-usage: Reference Template Generator
+java -jar ReferenceTemplateGenerator.jar --class X --package x --specify-root-path Y
 
-    --class <arg>     Required. Class Name
-    --package <arg>   Required. Package Name
+--class Aircraft required
+--package reference required
+--specify-root-path Y optional
 
 #### **!YOU WILL NOT LOSE YOUR OLD CLASSES, NOT ALLOWED TO OVERWRITE OLD CLASSES!**
 
