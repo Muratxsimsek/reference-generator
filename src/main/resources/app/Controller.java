@@ -16,19 +16,19 @@ import org.springframework.web.bind.annotation.RestController;
 public class #class#Controller extends BaseController<#class#, #class#DTO, #class#Filter, #class#DTOMapper, #class#Service> {
 
     @Autowired
-    private #class#DTOMapper cityDTOMapper;
+    private #class#DTOMapper #class#DTOMapper;
 
     @Autowired
-    private #class#Service cityService;
+    private #class#Service #class#Service;
 
     @Override
     protected #class#DTOMapper getMapper() {
-        return cityDTOMapper;
+        return #class#DTOMapper;
     }
 
     @Override
     protected #class#Service getService() {
-        return cityService;
+        return #class#Service;
     }
 
 }

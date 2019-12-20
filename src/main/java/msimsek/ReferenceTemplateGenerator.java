@@ -2,6 +2,7 @@ package msimsek;
 
 import com.google.common.base.CaseFormat;
 import org.apache.commons.cli.*;
+import org.apache.commons.io.IOUtils;
 
 import java.io.*;
 import java.nio.file.Files;
@@ -11,6 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 import java.util.Scanner;
+
 
 public class ReferenceTemplateGenerator {
 
@@ -90,6 +92,7 @@ public class ReferenceTemplateGenerator {
         createFile("dal", "Adapter.java");
         createFile("dal", "Domain.java");
         createFile("dal", "Filter.java");
+        createFile("dal", "Grid.java");
 
         createFile("dal-rdms", "AdapterImpl.java");
         createFile("dal-rdms", "Entity.java");
@@ -113,6 +116,7 @@ public class ReferenceTemplateGenerator {
 
         if (value != null) {
             rootPath = value.toString();
+            System.out.println("CURRENT REFERENCE ROOT FOLDER ===========>  " + rootPath);
         } else {
             setReferenceRootFolder();
         }
@@ -168,7 +172,7 @@ public class ReferenceTemplateGenerator {
 
         System.out.println("Is this path correct? Y/N");
         String answerPath = scanner.next();
-        System.out.println("\n");
+
 
         if (!yesAnswers.contains(answerPath)) {
             System.out.println("Please rerun ReferenceTemplateGenerator!");
@@ -181,13 +185,11 @@ public class ReferenceTemplateGenerator {
 
     private static void createFile(String layer, String fileName) throws IOException {
 
+        ClassLoader classloader = Thread.currentThread().getContextClassLoader();
         String path = rootPath;
-        File file = new File(ReferenceTemplateGenerator.class.getClassLoader().getResource(layer + "/" + fileName).getFile());
+        InputStream in = classloader.getResourceAsStream(layer + "/" + fileName);
 
-        FileInputStream fis = new FileInputStream(file);
-        byte[] data = new byte[(int) file.length()];
-        fis.read(data);
-        fis.close();
+        byte[] data = IOUtils.toByteArray(in);
 
         String fileContent = new String(data, "UTF-8");
         fileContent = fileContent.replaceAll(packageTag, packageName);
@@ -195,7 +197,7 @@ public class ReferenceTemplateGenerator {
         fileContent = fileContent.replaceAll(instanceTag, instanceName);
         fileContent = fileContent.replaceAll(tableTag, tableName);
 
-        String[] packageText = fileContent.split(System.lineSeparator(), 2);
+        String[] packageText = fileContent.toString().split(System.lineSeparator(), 2);
         String[] packagePath = packageText[0].split(" ");
 
         if (layer.equals("app")) {
@@ -224,7 +226,7 @@ public class ReferenceTemplateGenerator {
         boolean exists = tempFile.exists();
 
         if (!exists) {
-            Files.write(Paths.get(filePath), fileContent.getBytes());
+            Files.write(Paths.get(filePath), fileContent.toString().getBytes());
             System.out.println(filePath + " CREATED...");
         } else {
             System.out.println(filePath + " ALREADY EXISTS...");
